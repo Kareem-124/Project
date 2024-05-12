@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>StockMaster</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/boxicons/css/boxicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/quill/quill.bubble.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/remixicon/remixicon.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/simple-datatables/style.css' %}">
+
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+
+  <style>
+    .btn-orange {
+      color: white;
+      background-color: orange;
+    }
+
+    h1,
+    h3 {
+      text-align: center;
+      color: red;
+    }
+
+    .col-12 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="#" class="logo d-flex align-items-center">
+        <img src="{% static 'img/logo.png' %}" alt="">
+        <span class="d-none d-lg-block">StockMaster</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        </li><!-- End Notification Nav -->
+
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow Profile">
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+        </ul><!-- End Profile Dropdown Items -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <span class="d-none d-md-block dropdown-toggle ps-2">{{user.f_name}}</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>{{user.f_name}}</h6>
+              <span>Admin</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/dashboard/profile">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'SM_app:logout_process' %}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+  {% if user %}
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="/dashboard">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/dashboard/profile">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/display_products">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add Products</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/all_product">
+          <i class="bi bi-plus-circle"></i>
+          <span>All Products</span>
+        </a>
+      </li><!-- End F.A.Q Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/order_page">
+          <i class="bi bi-card-list"></i>
+          <span>Create Order</span>
+        </a>
+      </li><!-- End Orders Page Nav -->
+
+      <!-- Order History-->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'SM_app:display_orders_page' %}">
+          <i class="bi bi-book"></i>
+          <span>Order History</span>
+        </a>
+      </li>
+      <!-- End of Order History-->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+  {% endif %}
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <!-- ======= Dashboard Section ======= -->
+    <section class="section dashboard">
+        <h3><strong>Products</strong></h3>
+        <!-- Products Table -->
+        <div class="col-12">
+            <div class="card top-selling overflow-auto">
+                <div>
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr class="table-danger">
+                                <th scope="col">Product</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Quantity</th>
+                                <!-- Add more table headers if needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.p_name }}</td>
+                                <td>{{ product.date }}</td>
+                                <td>{{ product.qty }}</td>
+                                <!-- Add more table cells if needed -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Products Table -->
+    </section>
+    <!-- End Dashboard Section -->
+
+  </main><!-- End Main -->
+
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+  <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>
