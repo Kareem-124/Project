@@ -279,6 +279,7 @@
             $("#product_form").submit(function (e) {
                 // Prevent the page from re-freshing
                 e.preventDefault();
+                
                 $.ajax({
                     type: 'POST',
                     url: "{% url 'SM_app:product_list_process'  %}",
@@ -291,7 +292,7 @@
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (response) {
-
+                        
                         console.log(response.message);
                         if (response.message == "Success") {
                             $("#error_message").addClass("d-none");
@@ -303,6 +304,7 @@
                         else {
                             $("#error_message").removeClass("d-none");
                         }
+                        document.getElementById("product_form").reset();
 
                     },
                     error: function (response) {
