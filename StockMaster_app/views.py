@@ -288,24 +288,14 @@ def dashboard(request):
 # ********************* HAMADA SECTION ****************************
 # This function displays the name of the user in the profile section
 def display_products(request):
-     
     product = Prodcut.objects.all()
-    if product:
-        weight = product.weight
-        total_weight = product.total_weight
-        quantity = total_weight / weight 
-        result_floor = math.floor(quantity)
-        print(weight)
         
-       
-        context = {
-            'user': request.user, 
+    context = {
+        'user': request.user, 
+        'product' : product
         }
         
-        return render(request, 'display_products-page.html', context)
-    else:
-        # Handle the case where no product exists
-        return render(request, 'display_products-page.html', {'error': 'No product found'})
+    return render(request, 'display_products-page.html', context)
     
 def update_quantity(request, product_id):
     product = get_object_or_404(Prodcut, pk=product_id)
@@ -398,12 +388,36 @@ def search(request):
     }
     return render(request, 'all_product.html', context) 
 
-
-def remove_product_list(request, product_id):
+# Process: Delete
+def remove_product_list(request,product_id):
+    print("I am at the delete list part")
     product_list = Product_list.objects.get(id=product_id)
-    
     product_list.delete()
     return JsonResponse({'message': 'Success'})
+
+def process_product(request):
+    # Get the objects from the order_list
+    prodcut_list = Product_list.objects.all()
+    print(prodcut_list)
+    # Add the objects in the prodcut_list to the Product Table*
+    user = User.objects.get(id=request.session['user'])
+    for product in prodcut_list:
+        Prodcut.objects.create(p_name = product.p_name, total_weight = product.total_weight, date = product.date, weight = product.weight, user = user , qty = product.qty)
+        filtered_products = Prodcut.objects.filter(user = user , p_name = product.p_name )
+        print(filtered_products)
+
+    product_list_delete_all()
+    return redirect('/display_products')
+
+def product_list_delete_all():
+    Product_list.objects.all().delete()
+    return 
+
+def clear_all_product(request):
+    product_list_delete_all()
+    return redirect('/display_products')
+
+
 
 
 

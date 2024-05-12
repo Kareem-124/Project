@@ -252,9 +252,9 @@
                                 </table>
                                 <div class="row">
                                     <div class="col-sm-12 text-end">
-                                        <a href="{% url 'SM_app:process_order' %}" class="btn btn-success">Complete
+                                        <a href="{% url 'SM_app:process_product' %}" class="btn btn-success">Complete
                                             Order</a>
-                                        <a href="{% url 'SM_app:clear_all_order_list_process' %}"
+                                        <a href="{% url 'SM_app:clear_all_product' %}"
                                             class="btn btn-danger">Clear All</a>
                                     </div>
                                 </div>
@@ -338,10 +338,7 @@
                     var temp3 = "<td>" + response.prodcut_list[key].weight + "</td>";
                     var temp4 = "<td>" + response.prodcut_list[key].qty + "</td>";
                     var temp5 = "<td>" + response.prodcut_list[key].date + "</td>";
-                    var temp6 = '<td><a href="#" id = "re" class="remove_product_list" data-target-url="remove_product_list/' +
-            response.product_list[key].id + '" data-product-list-id="' +
-            response.product_list[key].id + '">Remove</a></td>';
-                    console.log(temp6)
+                    var temp6 = "<td>" + '<a href="#" id ="remove_order_list" data-target-url="remove_product_list/' + response.prodcut_list[key].id + '" data-order-list-id="' + response.prodcut_list[key].id + '" class="remove_order_list"> Remove </a></td>';
 
                     $('#' + id).append(temp1);
                     $('#' + id).append(temp2);
@@ -358,45 +355,21 @@
     });
 }, 500);
 });
-// $(document).on('click', '.remove_product_list', function (e) {
-//     e.preventDefault();
-//     var targetUrl = $(this).data('target-url');
-//     var orderListId = $(this).data('product-list-id');
+$(document).on('click', '.remove_order_list', function (e) {
+    e.preventDefault();
+    var targetUrl = $(this).data('target-url');
+    var orderListId = $(this).data('order-list-id');
 
-//     // Perform any desired actions before the AJAX request
+    // console.log("Clicked the Remove link!");
+    // console.log("targetUrl:", targetUrl);
+    // console.log("orderListId:", orderListId);
 
-//     // Perform AJAX request
-//     $.ajax({
-//         url: targetUrl,
-//         type: "GET",
-//         success: function(response) {
-//             // Handle success, for example, remove the row from the table if removal was successful
-//             // You can use orderListId to identify the specific row to remove
-//             // Example: $('#row_' + orderListId).remove();
-//         },
-//         error: function(xhr, status, error) {
-//             // Handle error, for example, show an error message
-//             alert("Error occurred while removing product. Please try again later.");
-//         }
-//     });
-// });
-function deleteElementOrReplaceWithXXX(re) {
-    var element = document.getElementById(re);
-    if (element) {
-        // If element exists, delete it
-        element.parentNode.removeChild(element);
-    } else {
-        // If element doesn't exist, replace it with "xxx"
-        console.log("Element not found. Replacing with 'xxx'.");
-        // Here, assuming you want to replace the content of the element
-        // with "xxx", you can also create a new element if needed
-        var newElement = document.createElement("div");
-        newElement.id = re;
-        
-        // Append the new element wherever necessary in your document
-        // Example: document.body.appendChild(newElement);
-    }
-}
+    $.ajax({
+        url: targetUrl,
+        type: "GET",
+    });
+    });
+
 
     </script>
     {% else %}
