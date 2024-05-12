@@ -289,7 +289,7 @@ def dashboard(request):
 # This function displays the name of the user in the profile section
 def display_products(request):
      
-    product = Prodcut.objects.first() 
+    product = Prodcut.objects.all()
     if product:
         weight = product.weight
         total_weight = product.total_weight
@@ -297,19 +297,16 @@ def display_products(request):
         result_floor = math.floor(quantity)
         print(weight)
         
-        # Update the quantity of the product
-        product.qty -= result_floor
-        product.save()
-        
+       
         context = {
-            'user': request.user,
-            'result_floor': result_floor
+            'user': request.user, 
         }
         
         return render(request, 'display_products-page.html', context)
     else:
         # Handle the case where no product exists
         return render(request, 'display_products-page.html', {'error': 'No product found'})
+    
 def update_quantity(request, product_id):
     product = get_object_or_404(Prodcut, pk=product_id)
     quantity = product.total_weight - product.weight
@@ -366,7 +363,7 @@ def remove_product_list(request,product_id):
     
 # To get add product to the list 
 def get_product_list(request):
-    prodcut_list = Product_list.objects.all().values('id','p_name', 'total_weight', 'weight', 'total_weight', 'weight', 'products')
+    prodcut_list = Product_list.objects.all().values('id','p_name', 'total_weight', 'weight', 'total_weight', 'qty', 'date')
     return JsonResponse({"prodcut_list":list(prodcut_list)}) 
 
 def  products_objects_total_qty(product_name,user):
@@ -402,9 +399,11 @@ def search(request):
     return render(request, 'all_product.html', context) 
 
 
-def generate_remove_link(request, product_id):
-    # Assuming product_id is passed as a parameter to the view function
-    remove_link = "<td><a href='#' id='remove_product_list' data-target-url='remove_product_list/" + str(product_id) + "' data-product-list-id='" + str(product_id) + "' class='remove_product_list'>Remove</a></td>"
-    return JsonResponse({'remove_link': remove_link})
+def remove_product_list(request, product_id):
+    product_list = Product_list.objects.get(id=product_id)
+    
+    product_list.delete()
+    return JsonResponse({'message': 'Success'})
+
 
 
