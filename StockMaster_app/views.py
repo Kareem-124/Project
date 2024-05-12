@@ -104,34 +104,33 @@ def order_list_process(request):
 
     try:
         if is_ajax(request = request) and request.method == "POST":
-            # Check if the barcode is exist
+            # Check if the p_name is exist
             user = check_session(request)
-            product = Prodcut.objects.filter(p_barcode=request.POST['barcode'], user = user).first()
+            product = Prodcut.objects.filter(p_name=request.POST['p_name'], user = user).first()
             order_list_products = Order_list.objects.all()
             total_order_list = 0
+            print('hi')
             if order_list_products:
                 for item in order_list_products:
                     total_order_list += item.qty_sell
-
+            print('bi')
             total_available = products_objects_total_qty(product.p_name,user)
             print(total_available - total_order_list)
             order_list_qty = request.POST['product_qty'] 
             if (total_available-total_order_list) < int(order_list_qty):
                 return JsonResponse({'message': 'qty_Exceeded'})
-            order_list_price = request.POST['product_price'] 
-            barcode = product.p_barcode
-
-            Order_list.objects.create(p_price=order_list_price,
+            order_list_name = request.POST['p_name'] 
+            Order_list.objects.create(p_name=order_list_name,
                                     qty_sell=order_list_qty,
-                                    products=product.p_name,
-                                    p_barcode = barcode)
+                                
+                                    )
             return JsonResponse({'message': 'Success'})
     except:
         return JsonResponse({'message': 'Invalid request '})
 
 
 def get_order_list(request):
-    order_list = Order_list.objects.all().values('id','p_price', 'qty_sell', 'products', 'p_barcode')
+    order_list = Order_list.objects.all().values('id', 'qty_sell', 'p_name' )
     return JsonResponse({"order_list":list(order_list)})
 
 # Process: Delete
@@ -165,31 +164,31 @@ def save_product(request):
 
 #------------------------`````````Update 2 KAREEM -----------------------
 # Process: process_order
+
 def process_order(request):
     # Get the objects from the order_list
     order_list = Order_list.objects.all()
     # Add the objects in the order_list to the order Table*
     user = User.objects.get(id=request.session['user'])
+    total_qty = 0 
+    total_sell_qty = 0 
     for order in order_list:
-        Order.objects.create(p_price = order.p_price, qty_sell = order.qty_sell, products = order.products ,total_weight = order.total_weight, user = user)
-        filtered_products = Prodcut.objects.filter(user = user , p_name = order.products )
+        Order.objects.create(p_name = order.p_name ,qty_sell = order.qty_sell, user = user)
+        total_sell_qty += order.qty_sell
+        filtered_products = Prodcut.objects.filter(user = user , p_name = order.p_name)
+        for item in filtered_products: 
+            total_qty += item.qty
 
-        # total_qty = products_objects_total_qty(filtered_products)
-        sell_qty = order.qty_sell
+    print(total_qty - total_sell_qty)
 
-        for item in filtered_products:
-            if sell_qty > item.qty:
-                sell_qty -= item.qty
-                item.qty = 0
-                item.save()
-            else:
-                item.qty -= sell_qty
-                sell_qty = 0
-                item.save()
-            print(f'{item.user} / {item.p_name} / object: {item}')
     # Delete the order_list items
     order_list_delete_all()
     return redirect('/order_page')
+
+# modfiy the product qty in DB: 
+
+# def modfiy(request): 
+#     Prodcut.objects.filter(p_name = "p_name")
 
 
 # Function: Delete all the records at the order_list table
@@ -288,24 +287,14 @@ def dashboard(request):
 # ********************* HAMADA SECTION ****************************
 # This function displays the name of the user in the profile section
 def display_products(request):
-     
     product = Prodcut.objects.all()
-    if product:
-        weight = product.weight
-        total_weight = product.total_weight
-        quantity = total_weight / weight 
-        result_floor = math.floor(quantity)
-        print(weight)
         
-       
-        context = {
-            'user': request.user, 
+    context = {
+        'user': request.user, 
+        'product' : product
         }
         
-        return render(request, 'display_products-page.html', context)
-    else:
-        # Handle the case where no product exists
-        return render(request, 'display_products-page.html', {'error': 'No product found'})
+    return render(request, 'display_products-page.html', context)
     
 def update_quantity(request, product_id):
     product = get_object_or_404(Prodcut, pk=product_id)
@@ -398,12 +387,36 @@ def search(request):
     }
     return render(request, 'all_product.html', context) 
 
-
-def remove_product_list(request, product_id):
+# Process: Delete
+def remove_product_list(request,product_id):
+    print("I am at the delete list part")
     product_list = Product_list.objects.get(id=product_id)
-    
     product_list.delete()
     return JsonResponse({'message': 'Success'})
+
+def process_product(request):
+    # Get the objects from the order_list
+    prodcut_list = Product_list.objects.all()
+    print(prodcut_list)
+    # Add the objects in the prodcut_list to the Product Table*
+    user = User.objects.get(id=request.session['user'])
+    for product in prodcut_list:
+        Prodcut.objects.create(p_name = product.p_name, total_weight = product.total_weight, date = product.date, weight = product.weight, user = user , qty = product.qty)
+        filtered_products = Prodcut.objects.filter(user = user , p_name = product.p_name )
+        print(filtered_products)
+
+    product_list_delete_all()
+    return redirect('/display_products')
+
+def product_list_delete_all():
+    Product_list.objects.all().delete()
+    return 
+
+def clear_all_product(request):
+    product_list_delete_all()
+    return redirect('/display_products')
+
+
 
 
 

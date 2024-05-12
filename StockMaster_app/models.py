@@ -66,14 +66,14 @@ class ProdcutManager(models.Manager):
             errors['weight'] = "Weight can not be negative"
         return errors
     
-    def order_list_validation(self,data):
-        errors = {}
-        if len(data['barcode']) < 0:
-            errors['barcode'] = "Please Enter The Barcode Number"
-        check = Prodcut.objects.filter(total_weight = data['barcode'])
-        if check[0] == None :
-            errors['barcode_not_exists'] = "The Barcode you entered dose not exists"
-        return errors
+    # def order_list_validation(self,data):
+    #     errors = {}
+    #     if len(data['p_name']) < 0:
+    #         errors['p_name'] = "Please Enter The Barcode Number"
+    #     check = Prodcut.objects.filter(total_weight = data['barcode'])
+    #     if check[0] == None :
+    #         errors['barcode_not_exists'] = "The Barcode you entered dose not exists"
+    #     return errors
     
 class Prodcut(models.Model): 
     p_name = models.CharField(max_length=255)
@@ -86,10 +86,10 @@ class Prodcut(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class Order(models.Model): 
-    p_price = models.FloatField()
+    p_name = models.CharField(max_length=255, default="")
     qty_sell = models.IntegerField()
     products = models.CharField(max_length=255)
-    total_weight = models.FloatField()
+    total_weight = models.FloatField(default=12)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User,related_name='orders',on_delete=models.CASCADE)
@@ -102,11 +102,12 @@ class Order(models.Model):
         return f"Order: {self.id} - Total Value: {self.totalValue}"
         
 
-class Order_list(models.Model): 
-    p_price = models.FloatField()
+class Order_list(models.Model):
+
+    p_name = models.CharField(max_length=255, default="")
     qty_sell = models.IntegerField()
-    products = models.CharField(max_length=255)
-    total_weight = models.IntegerField()
+    products = models.CharField(max_length=255, default='HI')
+    total_weight = models.IntegerField(default=15)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = ProdcutManager()

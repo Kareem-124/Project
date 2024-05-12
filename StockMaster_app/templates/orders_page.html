@@ -161,8 +161,7 @@
         <section class="section dashboard">
             <div class="row">
                 <div id="error_message" class="col-sm-12 text-center text-danger fs-3 d-none">
-                    Please Check That Entered Data is
-                    correct
+                    Please Check That Entered Data is correct
                 </div>
             </div>
             <div class="row">
@@ -174,10 +173,10 @@
                                 <!-- Barcode  -->
                                 <div class="row justify-content-center mb-3">
                                     <div class="col-sm-2 text-center fw-bold ">
-                                        <label class="form-label">Barcode:</label>
+                                        <label class="form-label">Product Name:</label>
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="number" class="form-control" name="order_barcode" id="barcode">
+                                        <input type="text" class="form-control" name="p_name" id="p_name">
                                     </div>
                                 </div>
                                 <!-- Product QTY -->
@@ -187,15 +186,6 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <input type="number" class="form-control" name="order_qty" id="product_qty">
-                                    </div>
-                                </div>
-                                <!-- Product Price -->
-                                <div class="row justify-content-center mb-3">
-                                    <div class="col-sm-2 text-center fw-bold ">
-                                        <label class="form-label">Product Price:</label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" class="form-control" name="order_price" id="product_price">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -214,9 +204,7 @@
                                     <tr class="table-primary">
                                         <th scope="col">#</th>
                                         <th scope="col">Product Name</th>
-                                        <th scope="col">Product Barcode</th>
                                         <th scope="col">Product Quantity</th>
-                                        <th scope="col">Product Price</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -271,9 +259,8 @@
                     type: 'POST',
                     url: "{% url 'SM_app:order_list_process'  %}",
                     data: {
-                        barcode: $('#barcode').val(),
+                        p_name: $('#p_name').val(),
                         product_qty: $('#product_qty').val(),
-                        product_price: $('#product_price').val(),
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (response) {
@@ -301,7 +288,7 @@
                     type: 'GET',
                     url: "{% url 'SM_app:get_order_list' %}",
                     success: function (response) {
-                        if (response.order_list.length == 0) {
+                        if (response.order_list.length == 0){
                             $('#table-body').empty();
                             console.log("No Data Available");
                         }
@@ -319,16 +306,13 @@
                                 $('#' + id).append('<th scope="row">' + index + '</th>');
 
 
-                                var temp1 = "<td>" + response.order_list[key].products + "</td>";
-                                var temp2 = "<td>" + response.order_list[key].p_barcode + "</td>";
-                                var temp3 = "<td>" + response.order_list[key].qty_sell + "</td>";
-                                var temp4 = "<td>" + response.order_list[key].p_price + "</td>";
-                                var temp5 = "<td>" + '<a href="#" id ="remove_order_list" data-target-url="remove_order_list/' + response.order_list[key].id + '" data-order-list-id="' + response.order_list[key].id + '" class="remove_order_list"> Remove </a></td>';
+                                var temp1 = "<td>" + response.order_list[key].p_name + "</td>";
+                                var temp2 = "<td>" + response.order_list[key].qty_sell + "</td>";
+                                var temp3 = "<td>" + '<a href="#" id ="remove_order_list" data-target-url="remove_order_list/' + response.order_list[key].id + '" data-order-list-id="' + response.order_list[key].id + '" class="remove_order_list"> Remove </a></td>';
                                 $('#' + id).append(temp1);
                                 $('#' + id).append(temp2);
                                 $('#' + id).append(temp3);
-                                $('#' + id).append(temp4);
-                                $('#' + id).append(temp5);
+                                
 
                             }
                         }
